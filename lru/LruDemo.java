@@ -2,6 +2,7 @@ package lru;
 
 public class LruDemo {
     public static void main(String[] args) throws InterruptedException {
+        System.out.println("LRU Cache Demo with Lazy Expiry");
         lru_lazy cache = new lru_lazy(2);
 
         cache.put(1, 100, 12_000); // expires after 1 second
@@ -19,6 +20,6 @@ public class LruDemo {
         System.out.println("key 3: " + cache.get(3));
         
         Thread.sleep(15_000);
-        cache.cleaner.shutdown();
+        cache.shutdown(); // Stop the cleanup thread
     }
 }

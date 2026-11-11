@@ -1,4 +1,4 @@
-package lru;
+package lru.localCache;
 
 public class LruDemo {
     public static void main(String[] args) throws InterruptedException {

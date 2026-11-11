@@ -1,4 +1,4 @@
-package lru;
+package lru.localCache;
 
 import java.util.HashMap;
 import java.util.concurrent.DelayQueue;
@@ -50,9 +50,9 @@ public class lru_dequeue {
     HashMap<Integer,Expiry> expiry=new HashMap<>();
     DelayQueue<Expiry> delay=new DelayQueue<>();
 
-    int capacity;
-    Node head;
-    Node tail;
+    private int capacity;
+    private Node head;
+    private Node tail;
 
     public lru_dequeue(int capacity)
     {
@@ -66,7 +66,7 @@ public class lru_dequeue {
 
     }
 
-    public void addNode(Node node)
+    private void addNode(Node node)
     {
         if(head==null)
         {
@@ -81,7 +81,7 @@ public class lru_dequeue {
         map.put(node.key, node);
     }
 
-    public void removeNode(Node node)
+    private void removeNode(Node node)
     {
         if(node==head)
             head=head.next;
@@ -159,6 +159,8 @@ public class lru_dequeue {
                         Node node = map.get(exp.key);
                         if(node!=null)
                             removeNode(map.get(exp.key));  
+
+                        expiry.remove(exp.key);
                     }
                 }
                 
@@ -167,5 +169,14 @@ public class lru_dequeue {
         {
             Thread.currentThread().interrupt();       
         }
+    }
+
+    public synchronized void invalidate(int key)
+    {
+        Node node = map.get(key);
+        if(node!=null)
+            removeNode(node);
+
+        expiry.remove(key);
     }
 }

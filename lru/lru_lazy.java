@@ -34,7 +34,7 @@ public class lru_lazy {
         head=null;
         tail=null;
 
-        cleaner.scheduleAtFixedRate(this:: cleanup, 1, 1, TimeUnit.SECONDS);
+        cleaner.scheduleAtFixedRate(this:: cleanup, 1, 2, TimeUnit.SECONDS);
 
     }
 
@@ -83,7 +83,7 @@ public class lru_lazy {
 
     }
 
-    public int get(int key)
+    public synchronized int get(int key)
     {
         Node node = map.get(key);
         if(node==null)
@@ -99,7 +99,7 @@ public class lru_lazy {
         return map.get(key).value;
     }
 
-    public void put(int key, int value, long ttl)
+    public synchronized void put(int key, int value, long ttl)
     {
         Node node = map.get(key);
         if(node!=null)
@@ -113,12 +113,16 @@ public class lru_lazy {
             
     }
 
-    public void cleanup(){
+    public synchronized void cleanup(){
+        System.out.println("Running cleanup task...");
+
         for(Map.Entry<Integer,Node> entry: map.entrySet())
         {
-            if(entry.getValue().expiryTime>=System.nanoTime())
+            
+            if(entry.getValue().expiryTime<=System.currentTimeMillis())
             {
                 removeNode(entry.getValue());
+                System.out.println(entry.getKey() + " expired and removed from cache");
                 map.remove(entry.getKey());
                 
             }

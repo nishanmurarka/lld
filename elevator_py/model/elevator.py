@@ -1,7 +1,7 @@
 import threading
 import time
-from elevator.dto.direction import Direction
-from elevator.dto.request import Request
+from dto import Direction
+from dto import Request
 
 
 class Elevator(threading.Thread):

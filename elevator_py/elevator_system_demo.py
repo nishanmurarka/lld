@@ -5,9 +5,9 @@ import time
 # Allow running this file directly from any directory
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from elevator.controller.elevator_controller import ElevatorController
-from elevator.dto.direction import Direction
-from elevator.strategy.nearest_elevator_strategy import NearestElevatorStrategy
+from .controller.elevator_controller import ElevatorController
+from .dto.direction import Direction
+from .strategy.nearest_elevator_strategy import NearestElevatorStrategy
 
 
 def main():

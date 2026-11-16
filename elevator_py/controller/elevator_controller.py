@@ -1,9 +1,9 @@
 import sys
 from typing import List, Optional
-from elevator.dto.direction import Direction
-from elevator.dto.request import Request
-from elevator.model.elevator import Elevator
-from elevator.strategy.dispatch_strategy import DispatchStrategy
+from dto import Direction
+from dto import Request
+from model import Elevator
+from strategy import DispatchStrategy
 
 
 class ElevatorController:

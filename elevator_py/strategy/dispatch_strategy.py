@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from elevator.model.elevator import Elevator
-    from elevator.dto.request import Request
+    from elevator_py.model.elevator import Elevator
+    from elevator_py.dto.request import Request
 
 
 class DispatchStrategy(ABC):

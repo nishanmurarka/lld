@@ -1,4 +1,4 @@
-from elevator.dto.direction import Direction
+from dto import Direction
 
 
 class Request:

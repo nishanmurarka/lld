@@ -73,8 +73,8 @@ public class SplitwiseService {
                 continue; // Skip if the user owes themselves
             }
 
-            balances.get(paidByUserName).put(owedToUserName, balances.get(paidByUserName).getOrDefault(owedToUserName, 0.0) + owedAmount);
-            balances.get(owedToUserName).put(paidByUserName, balances.get(owedToUserName).getOrDefault(paidByUserName, 0.0) - owedAmount);
+            balances.get(paidByUserName).compute(owedToUserName, (k, v) -> (v == null ? 0.0 : v) + owedAmount);
+            balances.get(owedToUserName).compute(paidByUserName, (k, v) -> (v == null ? 0.0 : v) - owedAmount);
         }
 
         group.addExpense(expense);

@@ -1,7 +1,5 @@
 package bookmyshow.service;
 
-import bookmyshow.models.Booking;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,22 +26,17 @@ public class BookingService {
 
     public Booking book(User user, Cinema cinema, Screen screen, Show show, List<ShowSeat> seats)
     {
-        try{
-            for(ShowSeat seat: seats)
+        for(ShowSeat seat: seats)
             {
                 if(lockService.isLocked(seat) || seatStatus.get(seat) == SeatStatus.BOOKED)
-                    throw new Exception("Booking cant be made, seat already booked");
+                    throw new RuntimeException("Booking cant be made, seat already booked");
                 lockService.lock(user.getName(), seat);
                 seatStatus.put(seat, SeatStatus.LOCKED);  
             }
             double amount = pricingStrategy.calculate(seats);
 
             return repository.createBooking(user, cinema, screen, show, seats, amount);
-        } catch(Exception e)
-        {
-            System.err.println(e.getMessage());
-            return null;
-        }
+        
     }
 
     public void confirmPayment(String user, Booking booking, boolean confirm )

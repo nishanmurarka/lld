@@ -8,51 +8,47 @@ import bookmyshow.models.*;
 public class LockService {
 
     Map<ShowSeat, SeatLock> map;
+    Map<ShowSeat, Object> showSeatLockObject;
 
     public LockService(){
         map=new ConcurrentHashMap<>();
+        showSeatLockObject = new ConcurrentHashMap<>();
     }
 
-    public synchronized boolean isLocked(ShowSeat showSeat) {
-    
-        SeatLock lock = map.get(showSeat);
-        if(lock !=null)
-        {
-            if(System.currentTimeMillis()<lock.getExpiry())
-                return true;
-        }
-        return false;
+    public Object getLockObject(ShowSeat seat){
+        return showSeatLockObject.computeIfAbsent(seat, key -> new Object());
     }
 
-    public synchronized void lock(String user, ShowSeat showSeat){
-        try{    
+    public boolean isLocked(ShowSeat showSeat) {
+        synchronized(getLockObject(showSeat)){
             SeatLock lock = map.get(showSeat);
             if(lock !=null)
             {
-                if( System.currentTimeMillis()<lock.getExpiry())
-                    throw new Exception("Seat Already Locked");
+                if(System.currentTimeMillis()<lock.getExpiry())
+                    return true;
             }
-            map.put(showSeat, new SeatLock(showSeat, user, 60_000));
-        } catch (Exception e)
-        {
-            System.err.println(e.getMessage());
+            return false;
         }
-
     }
 
-    public synchronized void unlock(String user, ShowSeat showSeat)
+    public void lock(String user, ShowSeat showSeat){
+        synchronized(getLockObject(showSeat)){
+            if(isLocked(showSeat))
+                throw new RuntimeException("Seat Already Locked");
+
+            map.put(showSeat, new SeatLock(showSeat, user, 10));
+        }
+    }
+
+    public void unlock(String user, ShowSeat showSeat)
     {
-        try {
+        synchronized(getLockObject(showSeat)){
             SeatLock lock=map.get(showSeat);
             if(lock==null)
                 return;
             if(!lock.getLockedBy().equalsIgnoreCase(user))
-                throw new Exception("Can be unlocked only by the same User");
-
+                throw new RuntimeException("Can be unlocked only by the same User");
             map.remove(showSeat);
-
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
         }
     }
 }

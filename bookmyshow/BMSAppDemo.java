@@ -68,6 +68,48 @@ public class BMSAppDemo {
         System.out.println("Seat 1 Status  : " + bookingService.showStatus(showSeat1));
         System.out.println("Seat 2 Status  : " + bookingService.showStatus(showSeat2));
         System.out.println();
+
+        // ----------------------------------------------------
+        // 2. SCENARIO 2: BOB Tries to book SS3 hold by Alice
+        // ----------------------------------------------------
+
+        aliceSeats=Arrays.asList(showSeat3);
+        aliceBooking = bookingService.book(alice, cinema, screen, show, aliceSeats);
+        System.out.println("Booking Created for Alice!");
+        System.out.println("Booking ID     : " + aliceBooking.getId());
+        System.out.println("Total Amount   : $" + aliceBooking.getTotalAmount());
+        System.out.println("Booking Status : " + aliceBooking.getStatus());
+        System.out.println();
+        try{
+            Thread.sleep(1000);
+            List<ShowSeat> bobSeats=Arrays.asList(showSeat3);
+            Booking bobBooking = bookingService.book(bob, cinema, screen, show, bobSeats);
+            System.out.println("Booking Created for Bob!");
+            System.out.println("Booking ID     : " + bobBooking.getId());
+            System.out.println("Total Amount   : $" + bobBooking.getTotalAmount());
+            System.out.println("Booking Status : " + bobBooking.getStatus());
+            System.out.println();
+        } catch(Exception e)
+        {
+            System.err.println(e.getMessage());
+        }
+
+        try{
+            Thread.sleep(11000);
+            List<ShowSeat> bobSeats=Arrays.asList(showSeat3);
+            Booking bobBooking = bookingService.book(bob, cinema, screen, show, bobSeats);
+            System.out.println("Booking Created for Bob!");
+            System.out.println("Booking ID     : " + bobBooking.getId());
+            System.out.println("Total Amount   : $" + bobBooking.getTotalAmount());
+            System.out.println("Booking Status : " + bobBooking.getStatus());
+            System.out.println();
+        } catch(Exception e)
+        {
+            System.err.println(e.getMessage());
+        }
+
+
+
         
     }
 }

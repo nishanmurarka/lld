@@ -19,16 +19,22 @@ public class LockService {
         return showSeatLockObject.computeIfAbsent(seat, key -> new Object());
     }
 
-    public boolean isLocked(ShowSeat showSeat) {
+    public boolean validateLock(String user, ShowSeat showSeat) {
         synchronized(getLockObject(showSeat)){
             SeatLock lock = map.get(showSeat);
             if(lock !=null)
             {
                 if(System.currentTimeMillis()<lock.getExpiry())
-                    return true;
+                    return lock.getLockedBy().equalsIgnoreCase(user);
             }
             return false;
         }
+    }
+
+    public boolean isLocked(ShowSeat showSeat) {
+            SeatLock lock = map.get(showSeat);
+            return lock !=null && System.currentTimeMillis()<lock.getExpiry();
+        
     }
 
     public void lock(String user, ShowSeat showSeat){

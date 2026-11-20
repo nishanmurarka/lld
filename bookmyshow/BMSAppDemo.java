@@ -65,8 +65,8 @@ public class BMSAppDemo {
         bookingService.confirmPayment(alice.getName(), aliceBooking,true);
         System.out.println("Payment Successful!");
         System.out.println("Booking Status : " + aliceBooking.getStatus());
-        System.out.println("Seat 1 Status  : " + bookingService.showStatus(showSeat1));
-        System.out.println("Seat 2 Status  : " + bookingService.showStatus(showSeat2));
+        System.out.println("Seat 1 Status  : " + showSeat1.getStatus());
+        System.out.println("Seat 2 Status  : " + showSeat2.getStatus());
         System.out.println();
 
         // ----------------------------------------------------
@@ -103,10 +103,19 @@ public class BMSAppDemo {
             System.out.println("Total Amount   : $" + bobBooking.getTotalAmount());
             System.out.println("Booking Status : " + bobBooking.getStatus());
             System.out.println();
+
+
+            Thread.sleep(12_000);
+            bookingService.confirmPayment(bob.getName(), bobBooking, true);
+            System.out.println("Payment Successful!");
+            System.out.println("Booking Status : " + bobBooking.getStatus());
+            System.out.println("Seat 3 Status  : " + showSeat3.getStatus());
+            System.out.println();
         } catch(Exception e)
         {
             System.err.println(e.getMessage());
         }
+
 
 
 

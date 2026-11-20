@@ -2,10 +2,13 @@ package bookmyshow.models;
 
 import java.util.Objects;
 
+import bookmyshow.enums.SeatStatus;
+
 
 public class ShowSeat {
-    public Show show;
-    public Seat seat;
+    private Show show;
+    private Seat seat;
+    private SeatStatus status;
 
     public ShowSeat(Show show, Seat seat)
     {
@@ -16,6 +19,14 @@ public class ShowSeat {
     public Seat getSeat()
     {
         return seat;
+    }
+
+    public SeatStatus getStatus(){
+        return status;
+    }
+
+    public void setStatus(SeatStatus status){
+        this.status=status;
     }
 
     @Override 

@@ -1,8 +1,6 @@
 package bookmyshow.service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import bookmyshow.models.*;
 import bookmyshow.enums.*;
@@ -14,24 +12,21 @@ public class BookingService {
     private BookingRepository repository;
     private LockService lockService;
 
-    Map<ShowSeat, SeatStatus> seatStatus;
-
     public BookingService(PricingStrategy pricingStrategy, BookingRepository repository, LockService lockService)
     {
         this.pricingStrategy=pricingStrategy;
         this.repository=repository;
-        this.lockService=lockService;
-        seatStatus = new ConcurrentHashMap<>();     
+        this.lockService=lockService;  
     }
 
     public Booking book(User user, Cinema cinema, Screen screen, Show show, List<ShowSeat> seats)
     {
         for(ShowSeat seat: seats)
             {
-                if(lockService.isLocked(seat) || seatStatus.get(seat) == SeatStatus.BOOKED)
+                if(seat.getStatus() == SeatStatus.BOOKED)
                     throw new RuntimeException("Booking cant be made, seat already booked");
                 lockService.lock(user.getName(), seat);
-                seatStatus.put(seat, SeatStatus.LOCKED);  
+                seat.setStatus(SeatStatus.LOCKED);  
             }
             double amount = pricingStrategy.calculate(seats);
 
@@ -43,27 +38,24 @@ public class BookingService {
     {
         if(confirm)
         {
-            for(ShowSeat seats: booking.getSeats())
+            for(ShowSeat seat: booking.getSeats())
             {
-                seatStatus.put(seats, SeatStatus.BOOKED);
+                if(!lockService.validateLock(user, seat))
+                    throw new RuntimeException("Lock expired for seat, retry booking from start");
+                seat.setStatus(SeatStatus.BOOKED);
             }
             booking.setStatus(BookingStatus.CONFIRMED);
             System.out.println(booking);
         }
         else{
-            for(ShowSeat seats: booking.getSeats())
+            for(ShowSeat seat: booking.getSeats())
             {
-                seatStatus.put(seats, SeatStatus.AVAILABLE);
-                lockService.unlock(user, seats);
+                seat.setStatus(SeatStatus.AVAILABLE);
+                lockService.unlock(user, seat);
             }
             booking.setStatus(BookingStatus.CANCELLED);
             System.out.println(booking);
         }
-    }
-
-    public String showStatus(ShowSeat seat)
-    {
-        return seatStatus.get(seat).toString();
     }
 
 }
